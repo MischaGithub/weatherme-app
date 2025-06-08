@@ -1,8 +1,6 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { CitySearch } from "./CitySearch";
-import { ThemeToggle } from "./ThemeToggle";
 import { useTheme } from "@/context/theme-provider";
 
 export function Header() {
@@ -22,6 +20,28 @@ export function Header() {
             />
           </Link>
           <span className="text-5xl font-bold">WeatherMe</span>
+        </div>
+
+        <div className="flex gap-4">
+          <ul className="flex flex-row justify-between">
+            <Link href={"/"}>
+              <li>
+                <span className="text-2xl font-bold tracking-tight">Today</span>
+              </li>
+            </Link>
+
+            <li>
+              <span className="text-2xl font-light tracking-tight">
+                Tomorrow
+              </span>
+            </li>
+            <li>
+              <span className="text-2xl font-light tracking-tight">
+                Monthly Forecast
+              </span>
+            </li>
+          </ul>
+          {/* <ThemeToggle /> */}
         </div>
       </div>
     </header>
