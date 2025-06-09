@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import QueryProvider from "@/providers/QueryProvider";
 import { ThemeProvider } from "../context/theme-provider";
-import { Layout } from "@/components/Layout";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { Header } from "@/components/Header";
@@ -28,7 +27,7 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <QueryProvider>
           <ThemeProvider defaultTheme="dark">
-            <Layout>{children}</Layout>
+            {children}
             <Toaster richColors />
           </ThemeProvider>
         </QueryProvider>

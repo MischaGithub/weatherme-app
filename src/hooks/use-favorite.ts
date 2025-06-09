@@ -1,6 +1,4 @@
-// src/hooks/use-favorites.ts
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocalStorage } from "./use-local-storage";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface FavoriteCity {
   id: string;
@@ -12,22 +10,43 @@ export interface FavoriteCity {
   addedAt: number;
 }
 
+const LOCAL_STORAGE_KEY = "favorites";
+
+function getFavoritesFromStorage(): FavoriteCity[] {
+  if (typeof window === "undefined") return [];
+  const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (!stored) return [];
+  try {
+    return JSON.parse(stored) as FavoriteCity[];
+  } catch {
+    return [];
+  }
+}
+
+function saveFavoritesToStorage(favorites: FavoriteCity[]) {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(favorites));
+}
+
 export function useFavorites() {
-  const [favorites, setFavorites] = useLocalStorage<FavoriteCity[]>(
-    "favorites",
-    []
-  );
   const queryClient = useQueryClient();
 
-  const favoritesQuery = useQuery({
+  // Query to load favorites from localStorage
+  const favoritesQuery = useQuery<FavoriteCity[]>({
     queryKey: ["favorites"],
-    queryFn: () => favorites,
-    initialData: favorites,
-    staleTime: Infinity, // Since we're managing the data in localStorage
+    queryFn: () => getFavoritesFromStorage(),
+    staleTime: Infinity,
   });
 
-  const addFavorite = useMutation({
-    mutationFn: async (city: Omit<FavoriteCity, "id" | "addedAt">) => {
+  // Mutation to add a favorite city
+  const addFavorite = useMutation<
+    FavoriteCity[], // Return type of mutationFn
+    Error, // Error type
+    Omit<FavoriteCity, "id" | "addedAt"> // Variables type: input city data without id/addedAt
+  >({
+    mutationFn: async (city) => {
+      const currentFavorites =
+        queryClient.getQueryData<FavoriteCity[]>(["favorites"]) || [];
+
       const newFavorite: FavoriteCity = {
         ...city,
         id: `${city.lat}-${city.lon}`,
@@ -35,36 +54,49 @@ export function useFavorites() {
       };
 
       // Prevent duplicates
-      const exists = favorites.some((fav) => fav.id === newFavorite.id);
-      if (exists) return favorites;
+      if (currentFavorites.some((fav) => fav.id === newFavorite.id)) {
+        return currentFavorites;
+      }
 
-      const newFavorites = [...favorites, newFavorite];
-      setFavorites(newFavorites);
+      const newFavorites = [...currentFavorites, newFavorite];
+      saveFavoritesToStorage(newFavorites);
+      queryClient.setQueryData(["favorites"], newFavorites);
+
       return newFavorites;
-    },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
   });
 
-  const removeFavorite = useMutation({
-    mutationFn: async (cityId: string) => {
-      const newFavorites = favorites.filter((city) => city.id !== cityId);
-      setFavorites(newFavorites);
+  // Mutation to remove a favorite city by id
+  const removeFavorite = useMutation<
+    FavoriteCity[], // Return type
+    Error,
+    string // city id to remove
+  >({
+    mutationFn: async (cityId) => {
+      const currentFavorites =
+        queryClient.getQueryData<FavoriteCity[]>(["favorites"]) || [];
+
+      const newFavorites = currentFavorites.filter(
+        (city) => city.id !== cityId
+      );
+
+      saveFavoritesToStorage(newFavorites);
+      queryClient.setQueryData(["favorites"], newFavorites);
+
       return newFavorites;
     },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["favorites"] });
-    },
   });
+
+  // Helper to check if a city is favorite by lat/lon
+  const isFavorite = (lat: number, lon: number) => {
+    const favs = favoritesQuery.data ?? [];
+    return favs.some((city) => city.lat === lat && city.lon === lon);
+  };
 
   return {
-    favorites: favoritesQuery.data,
+    favorites: favoritesQuery.data ?? [],
     addFavorite,
     removeFavorite,
-    isFavorite: (lat: number, lon: number) =>
-      favorites.some((city) => city.lat === lat && city.lon === lon),
+    isFavorite,
   };
 }
