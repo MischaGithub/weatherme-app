@@ -1,64 +1,70 @@
-import { API_CONFIG } from "./config";
 import type {
   WeatherData,
   ForecastData,
   GeocodingResponse,
   Coordinates,
-} from "./types";
+} from "@/lib/types";
+
+const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY!;
+const BASE_URL = "https://api.openweathermap.org/data/2.5";
+const GEO_URL = "https://api.openweathermap.org/geo/1.0";
 
 class WeatherAPI {
+  // Creates a URL with the given endpoint and parameters
   private createUrl(endpoint: string, params: Record<string, string | number>) {
     const searchParams = new URLSearchParams({
-      appid: API_CONFIG.API_KEY ?? "",
+      appid: API_KEY,
       ...params,
     });
+
     return `${endpoint}?${searchParams.toString()}`;
   }
 
+  // Fetches data from the API and returns the JSON
   private async fetchData<T>(url: string): Promise<T> {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Weather API Error: ${response.statusText}`);
-    }
-
-    return response.json();
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Weather API error: ${res.statusText}`);
+    return res.json();
   }
 
+  // Public methods to get weather data
   async getCurrentWeather({ lat, lon }: Coordinates): Promise<WeatherData> {
-    const url = this.createUrl(`${API_CONFIG.BASE_URL}/weather`, {
-      lat: lat.toString(),
-      lon: lon.toString(),
+    const url = this.createUrl(`${BASE_URL}/weather`, {
+      lat,
+      lon,
       units: "metric",
     });
     return this.fetchData<WeatherData>(url);
   }
 
+  // Gets the weather forecast for the next 5 days
   async getForecast({ lat, lon }: Coordinates): Promise<ForecastData> {
-    const url = this.createUrl(`${API_CONFIG.BASE_URL}/forecast`, {
-      lat: lat.toString(),
-      lon: lon.toString(),
+    const url = this.createUrl(`${BASE_URL}/forecast`, {
+      lat,
+      lon,
       units: "metric",
     });
     return this.fetchData<ForecastData>(url);
   }
 
+  // Reverse geocodes coordinates to get location information
   async reverseGeocode({
     lat,
     lon,
   }: Coordinates): Promise<GeocodingResponse[]> {
-    const url = this.createUrl(`${API_CONFIG.GEO}/reverse`, {
-      lat: lat.toString(),
-      lon: lon.toString(),
-      limit: "1",
+    const url = this.createUrl(`${GEO_URL}/reverse`, {
+      lat,
+      lon,
+      limit: 1,
     });
     return this.fetchData<GeocodingResponse[]>(url);
   }
 
+  // Searches for locations based on a query string
   async searchLocations(query: string): Promise<GeocodingResponse[]> {
-    const url = this.createUrl(`${API_CONFIG.GEO}/direct`, {
+    const url = this.createUrl(`${GEO_URL}/direct`, {
       q: query,
-      limit: "5",
+      limit: 5,
     });
     return this.fetchData<GeocodingResponse[]>(url);
   }

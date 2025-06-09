@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { weatherAPI } from "@/lib/api/weather";
-import type { Coordinates } from "@/lib/api/types";
+import type { Coordinates } from "@/lib/types";
 
 export const WEATHER_KEYS = {
   weather: (coords: Coordinates) => ["weather", coords] as const,

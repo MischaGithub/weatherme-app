@@ -2,7 +2,7 @@
 import { Card, CardContent } from "./ui/card";
 import { ArrowDown, ArrowUp, Droplets, Wind } from "lucide-react";
 import { format } from "date-fns";
-import type { WeatherData, GeocodingResponse } from "@/lib/api/types";
+import type { WeatherData, GeocodingResponse } from "@/lib/types";
 import Image from "next/image";
 
 interface CurrentWeatherProps {

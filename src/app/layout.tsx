@@ -25,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} antialiased`}>
+        <Header />
         <QueryProvider>
           <ThemeProvider defaultTheme="dark">
             {children}

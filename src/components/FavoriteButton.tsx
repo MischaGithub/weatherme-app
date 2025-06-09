@@ -2,7 +2,7 @@
 "use client";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { WeatherData } from "@/lib/api/types";
+import type { WeatherData } from "@/lib/types";
 import { useFavorites } from "@/hooks/use-favorite";
 import { toast } from "sonner";
 
