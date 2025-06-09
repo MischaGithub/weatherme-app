@@ -1,16 +1,17 @@
+// lib/weather-api.ts
 import type {
   WeatherData,
   ForecastData,
   GeocodingResponse,
   Coordinates,
-} from "@/lib/types";
+} from "@/lib/types"; // adjust the path based on your structure
 
 const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY!;
 const BASE_URL = "https://api.openweathermap.org/data/2.5";
 const GEO_URL = "https://api.openweathermap.org/geo/1.0";
 
 class WeatherAPI {
-  // Creates a URL with the given endpoint and parameters
+  // Create a URL with the given endpoint and parameters
   private createUrl(endpoint: string, params: Record<string, string | number>) {
     const searchParams = new URLSearchParams({
       appid: API_KEY,
@@ -20,7 +21,7 @@ class WeatherAPI {
     return `${endpoint}?${searchParams.toString()}`;
   }
 
-  // Fetches data from the API and returns the JSON
+  // Fetch data from the API and handle errors
   private async fetchData<T>(url: string): Promise<T> {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Weather API error: ${res.statusText}`);
@@ -37,7 +38,7 @@ class WeatherAPI {
     return this.fetchData<WeatherData>(url);
   }
 
-  // Gets the weather forecast for the next 5 days
+  // Get weather forecast data
   async getForecast({ lat, lon }: Coordinates): Promise<ForecastData> {
     const url = this.createUrl(`${BASE_URL}/forecast`, {
       lat,
@@ -47,7 +48,7 @@ class WeatherAPI {
     return this.fetchData<ForecastData>(url);
   }
 
-  // Reverse geocodes coordinates to get location information
+  // Geocoding methods
   async reverseGeocode({
     lat,
     lon,
@@ -60,7 +61,7 @@ class WeatherAPI {
     return this.fetchData<GeocodingResponse[]>(url);
   }
 
-  // Searches for locations based on a query string
+  // Search for locations by name
   async searchLocations(query: string): Promise<GeocodingResponse[]> {
     const url = this.createUrl(`${GEO_URL}/direct`, {
       q: query,

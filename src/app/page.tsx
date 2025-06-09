@@ -1,4 +1,3 @@
-import { Header } from "@/components/Header";
 import { WeatherDashboard } from "./pages/WeatherDashboard";
 
 export default function Home() {

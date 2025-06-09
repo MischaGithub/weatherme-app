@@ -9,10 +9,7 @@ interface Props {
 
 export default function QueryProvider({ children }: Props) {
   // Create a new QueryClient instance
-  // This is done on the client side to ensure that the QueryClientProvider
-  // can manage the state of queries and mutations effectively.
-  // Using useState to ensure that the QueryClient is only created once
-  // and persists across re-renders.
+  // This ensures that the QueryClient is created only once
   const [queryClient] = useState(() => new QueryClient());
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
