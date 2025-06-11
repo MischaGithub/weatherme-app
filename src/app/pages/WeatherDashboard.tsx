@@ -9,7 +9,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { MapPin, AlertTriangle, RefreshCw } from "lucide-react";
 import { useGeolocation } from "@/hooks/use-geolocation";
-import { WeatherDetails } from "@/components/WeatherDetails";
 import { WeatherForecast } from "@/components/WeatherForecast";
 import { HourlyTemperature } from "@/components/HourlyTemprature";
 import WeatherSkeleton from "@/components/LoadingSkeleton";
@@ -104,16 +103,15 @@ export function WeatherDashboard() {
       </div>
 
       <div className="grid gap-6 mt-20">
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-4 mb-6">
           <CurrentWeather
             data={weatherQuery.data}
             locationName={locationName}
           />
-          <WeatherDetails data={weatherQuery.data} />
+          <HourlyTemperature data={forecastQuery.data} />
         </div>
 
         <div className="grid gap-6 md:grid-cols-1 items-start">
-          <HourlyTemperature data={forecastQuery.data} />
           <WeatherForecast data={forecastQuery.data} />
         </div>
       </div>

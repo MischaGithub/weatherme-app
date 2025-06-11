@@ -23,10 +23,12 @@ export function CitySearch() {
   const [query, setQuery] = useState("");
   const router = useRouter();
 
+  // Get data
   const { data: locations, isLoading } = useLocationSearch(query);
   const { favorites } = useFavorites();
   const { history, clearHistory, addToHistory } = useSearchHistory();
 
+  // Clear query when dialog is closed
   const handleSelect = (cityData: string) => {
     const [lat, lon, name, country] = cityData.split("|");
 
@@ -51,7 +53,6 @@ export function CitySearch() {
   return (
     <div className="relative w-[70%] mx-auto">
       <Button
-        // variant="outline"
         className="relative w-full justify-start text-xl font-poppins font-bold text-[#524E4E] bg-[#D9D9D9] h-[66px] rounded-[35px] "
         onClick={() => setOpen(true)}
       >
@@ -146,9 +147,9 @@ export function CitySearch() {
                     <Loader2 className="h-4 w-4 animate-spin" />
                   </div>
                 )}
-                {locations?.map((location) => (
+                {locations?.map((location, index) => (
                   <CommandItem
-                    key={`${location.lat}-${location.lon}`}
+                    key={`${location.lat}-${location.lon}-${index}`}
                     value={`${location.lat}|${location.lon}|${location.name}|${location.country}`}
                     onSelect={handleSelect}
                   >

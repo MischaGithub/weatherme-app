@@ -8,6 +8,7 @@ import { HourlyTemperature } from "@/components/HourlyTemprature";
 import { WeatherForecast } from "@/components/WeatherForecast";
 import WeatherSkeleton from "@/components/LoadingSkeleton";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { WeatherDetails } from "@/components/WeatherDetails";
 
 type CityParams = {
   name: string;
@@ -25,6 +26,7 @@ export function CityPage() {
   const weatherQuery = useWeatherQuery(coordinates);
   const forecastQuery = useForecastQuery(coordinates);
 
+  // Checking if there is any error
   if (weatherQuery.error || forecastQuery.error) {
     return (
       <Alert variant="destructive">
@@ -59,8 +61,8 @@ export function CityPage() {
       <div className="grid gap-6">
         <CurrentWeather data={weatherQuery.data} />
         <HourlyTemperature data={forecastQuery.data} />
+        <WeatherDetails data={weatherQuery.data} />
         <div className="grid gap-6 md:grid-cols-1 items-start">
-          {/* <WeatherDetails data={weatherQuery.data} /> */}
           <WeatherForecast data={forecastQuery.data} />
         </div>
       </div>
