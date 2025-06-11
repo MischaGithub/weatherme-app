@@ -1,4 +1,3 @@
-// src/components/weather/favorite-cities.tsx
 "use client";
 import { useRouter } from "next/navigation";
 import { useWeatherQuery } from "@/hooks/use-weather";
@@ -26,6 +25,7 @@ function FavoriteCityTablet({
   const router = useRouter();
   const { data: weather, isLoading } = useWeatherQuery({ lat, lon });
 
+  // Navigate to city
   const handleClick = () => {
     router.push(`/city/${name}?lat=${lat}&lon=${lon}`);
   };

@@ -90,9 +90,9 @@ export function CurrentWeather({ data, locationName }: CurrentWeatherProps) {
                 <p className="text-sm font-medium capitalize">
                   {currentWeather.description}
                 </p>
-                <div className="space-y-1">
+                <div className="space-y-1 ">
                   <div className="flex gap-2 text-sm font-medium">
-                    <span className="flex items-center gap-1 text-blue-500">
+                    <span className="flex items-center gap-1 text-blue-500 pr-6">
                       <ArrowDown className="h-3 w-3" />
                       {formatTemp(temp_min)}
                     </span>
