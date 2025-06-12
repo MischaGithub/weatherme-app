@@ -12,13 +12,17 @@ interface FavoriteButtonProps {
 
 export function FavoriteButton({ data }: FavoriteButtonProps) {
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+
+  // Check if this city is already a favorite
   const isCurrentlyFavorite = isFavorite(data.coord.lat, data.coord.lon);
 
   const handleToggleFavorite = () => {
     if (isCurrentlyFavorite) {
+      // Remove from favorites and show a toast message
       removeFavorite.mutate(`${data.coord.lat}-${data.coord.lon}`);
       toast.error(`Removed ${data.name} from Favorites`);
     } else {
+      // Add to favorites and show a toast message
       addFavorite.mutate({
         name: data.name,
         lat: data.coord.lat,

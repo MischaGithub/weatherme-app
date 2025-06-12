@@ -1,5 +1,4 @@
 "use client";
-
 import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
@@ -30,6 +29,7 @@ export function ThemeProvider({
   const [theme, setThemeState] = useState<Theme>(defaultTheme);
   const [isMounted, setIsMounted] = useState(false); // Track client-side mount
 
+  // Load theme from localStorage on mount
   useEffect(() => {
     setIsMounted(true);
 
@@ -43,6 +43,7 @@ export function ThemeProvider({
     }
   }, [storageKey]);
 
+  // Apply theme to <html> tag
   useEffect(() => {
     if (!isMounted) return;
 
@@ -64,6 +65,7 @@ export function ThemeProvider({
     applyTheme(theme);
   }, [theme, isMounted]);
 
+  // Save and set theme
   const setTheme = (newTheme: Theme) => {
     localStorage.setItem(storageKey, newTheme);
     setThemeState(newTheme);

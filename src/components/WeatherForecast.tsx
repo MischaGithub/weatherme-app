@@ -36,6 +36,7 @@ export function WeatherForecast({ data }: WeatherForecastProps) {
         date: forecast.dt,
       };
     } else {
+      // Update min/max temps if needed
       acc[date].temp_min = Math.min(acc[date].temp_min, forecast.main.temp_min);
       acc[date].temp_max = Math.max(acc[date].temp_max, forecast.main.temp_max);
     }

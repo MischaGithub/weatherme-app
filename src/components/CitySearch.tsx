@@ -28,11 +28,10 @@ export function CitySearch() {
   const { favorites } = useFavorites();
   const { history, clearHistory, addToHistory } = useSearchHistory();
 
-  // Clear query when dialog is closed
+  // Handle selection of any city from suggestions, favorites, or history.
   const handleSelect = (cityData: string) => {
     const [lat, lon, name, country] = cityData.split("|");
 
-    // Add to search history
     addToHistory.mutate({
       query,
       name,
@@ -42,6 +41,8 @@ export function CitySearch() {
     });
 
     setOpen(false);
+
+    // Navigate to the selected city page with query params
     router.push(
       `/city/${encodeURIComponent(name)}?${new URLSearchParams({
         lat,

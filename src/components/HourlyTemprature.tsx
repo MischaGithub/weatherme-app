@@ -38,6 +38,7 @@ export function HourlyTemperature({ data }: HourlyTemperatureProps) {
     );
   }
 
+  // Prepare chart data first 8 entries, formatted time and rounded temps
   const chartData: ChartData[] = data.list.slice(0, 8).map((item) => ({
     time: format(new Date(item.dt * 1000), "ha"),
     temp: Math.round(item.main.temp),
