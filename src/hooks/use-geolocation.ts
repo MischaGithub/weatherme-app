@@ -15,9 +15,11 @@ export function useGeolocation() {
     isLoading: true,
   });
 
+  // Get user's current location
   const getLocation = () => {
     setLocationData((prev) => ({ ...prev, isLoading: true, error: null }));
 
+    // Check if geolocation is supported by the browser
     if (!navigator.geolocation) {
       setLocationData({
         coordinates: null,
@@ -27,6 +29,7 @@ export function useGeolocation() {
       return;
     }
 
+    // Attempt to get the current position from the browser
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocationData({

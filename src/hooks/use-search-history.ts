@@ -13,18 +13,21 @@ interface SearchHistoryItem {
 }
 
 export function useSearchHistory() {
+  // Store and sync history in localStorage
   const [history, setHistory] = useLocalStorage<SearchHistoryItem[]>(
     "search-history",
     []
   );
   const queryClient = useQueryClient();
 
+  // Load search history from localStorage and cache it
   const historyQuery = useQuery({
     queryKey: ["search-history"],
     queryFn: () => history,
     initialData: history,
   });
 
+  // Add a new search to the history
   const addToHistory = useMutation({
     mutationFn: async (
       search: Omit<SearchHistoryItem, "id" | "searchedAt">
@@ -41,6 +44,7 @@ export function useSearchHistory() {
       );
       const newHistory = [newSearch, ...filteredHistory].slice(0, 10);
 
+      // Save updated history to localStorage
       setHistory(newHistory);
       return newHistory;
     },
@@ -55,6 +59,7 @@ export function useSearchHistory() {
       return [];
     },
     onSuccess: () => {
+      // Update cache with latest history
       queryClient.setQueryData(["search-history"], []);
     },
   });
